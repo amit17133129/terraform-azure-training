@@ -1,0 +1,66 @@
+stages:
+ - stage: validate
+   jobs:
+     - job: validate
+
+       continueOnError: False
+       steps:
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
+   
+        - task: TerraformTaskV3@3
+          displayName: init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'Pay-As-You-Go(3212ab15-1cd5-4407-af53-d059573b391a)'
+            backendAzureRmResourceGroupName: 'dev-rg'
+            backendAzureRmStorageAccountName: 'terraformstatebackend123'
+            backendAzureRmContainerName: 'terraform'
+            backendAzureRmKey: 'terraform.tfstate'
+        
+        - task: TerraformTaskV3@3
+          displayName: validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+   
+ - stage: deploy
+   jobs:
+     - deployment: deploy-terraform
+       continueOnError: False
+       environment: 'dev'
+       strategy:
+        runOnce:
+           deploy:
+             steps:
+                - checkout: self
+                - task: TerraformInstaller@0
+                  displayName: 'initialize'
+                  inputs:
+                    terraformVersion: 'latest'
+
+                - task: TerraformTaskV3@3
+                  displayName: 'init'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'init'
+                    backendServiceArm: 'Pay-As-You-Go(3212ab15-1cd5-4407-af53-d059573b391a)'
+                    backendAzureRmResourceGroupName: 'dev-rg'
+                    backendAzureRmStorageAccountName: 'terraformstatebackend123'
+                    backendAzureRmContainerName: 'terraform'
+                    backendAzureRmKey: 'terraform.tfstate'
+                    
+                - task: TerraformTaskV3@3
+                  displayName: 'plan'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'plan'
+                    environmentServiceNameAzureRM: 'Pay-As-You-Go(3212ab15-1cd5-4407-af53-d059573b391a)'
+
+                - task: TerraformTaskV3@3
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'apply'
+                    environmentServiceNameAzureRM: 'Pay-As-You-Go(3212ab15-1cd5-4407-af53-d059573b391a)'
