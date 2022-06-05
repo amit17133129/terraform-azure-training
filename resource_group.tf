@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "my_rg_1" {
-  name = "my-test-rg-new"
+  name = "my-test-rg-new----------------test"
   location = "West Europe"
 
   tags = {
