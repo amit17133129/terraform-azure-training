@@ -28,7 +28,7 @@ stages:
    
  - stage: deploy
    jobs:
-     - deployment: 'deploy-terraform'
+     - deployment: 'deployterraform'
        continueOnError: False
        environment: 'dev'
        strategy:
