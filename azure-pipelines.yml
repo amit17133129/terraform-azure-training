@@ -60,6 +60,7 @@ stages:
                     environmentServiceNameAzureRM: 'Pay-As-You-Go(3212ab15-1cd5-4407-af53-d059573b391a)'
 
                 - task: TerraformTaskV3@3
+                  displayName: 'apply'
                   inputs:
                     provider: 'azurerm'
                     command: 'apply'
