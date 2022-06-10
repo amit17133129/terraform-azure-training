@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "my_rg_1" {
-  name = "my-test-rg-new----------------test"
+  name = "terraform-cloud-resource-group-creation"
   location = "West Europe"
 
   tags = {
